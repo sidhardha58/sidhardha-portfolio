@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   // pins every relative/OG url to the .dev origin so nothing canonicalises back to .site
   metadataBase: new URL(config.site),
   alternates: { canonical: "./" },
-  title: config.title,
+  title: "Sidhardha Portfolio",
   description: config.description.long,
   keywords: config.keywords,
   authors: [{ name: config.author }],
