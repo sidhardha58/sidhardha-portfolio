@@ -182,7 +182,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                 {project.content}
               </motion.div>
 
-              <div className={`mt-10 grid gap-3 ${project.screenshots.length > 0 ? "sm:grid-cols-2" : ""}`}>
+              <div className="mt-10 grid gap-3">
                 {[project.src, ...project.screenshots].map((src) => (
                   <img
                     key={src}
