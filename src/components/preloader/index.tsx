@@ -40,6 +40,7 @@ export const usePreloader = () => {
   return context;
 };
 const LOADING_TIME = 2.5;
+const SPLASH_LIMIT_MS = 8000;
 function Preloader({ children, disabled = false }: PreloaderProps) {
   const pathname = usePathname();
   // Skip the loading splash for the résumé route (and anywhere it's disabled).
@@ -67,6 +68,7 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
   const loadingPercentRef = useRef<{ value: number }>({ value: 0 });
   useEffect(() => {
     if (skip) return;
+    const stop = window.setTimeout(bypassLoading, SPLASH_LIMIT_MS);
     loadingTween.current = gsap.to(loadingPercentRef.current, {
       value: 100,
       duration: LOADING_TIME,
@@ -74,14 +76,12 @@ function Preloader({ children, disabled = false }: PreloaderProps) {
       onUpdate: () => {
         setLoadingPercent(loadingPercentRef.current.value);
       },
-      onComplete: () => {
-        setIsLoading(false);
-      },
     });
     return () => {
+      window.clearTimeout(stop);
       loadingTween.current?.kill();
     };
-  }, [skip]);
+  }, [skip, bypassLoading]);
 
   return (
     <preloaderContext.Provider

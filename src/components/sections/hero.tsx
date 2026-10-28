@@ -11,7 +11,7 @@ import {
 import { usePreloader } from "../preloader";
 import { BlurIn, BoxReveal } from "../reveal-animations";
 import ScrollDownIcon from "../scroll-down-icon";
-import { SiGithub, SiLinkedin } from "react-icons/si";
+import { SiGithub, SiLinkedin, SiWhatsapp } from "react-icons/si";
 import { config } from "@/data/config";
 
 import SectionWrapper from "../ui/section-wrapper";
@@ -127,6 +127,15 @@ const HeroSection = () => {
                     >
                       <Button variant={"outline"}>
                         <SiLinkedin size={24} />
+                      </Button>
+                    </Link>
+                    <Link
+                      href={config.social.whatsapp}
+                      target="_blank"
+                      className="cursor-can-hover"
+                    >
+                      <Button variant={"outline"} aria-label="WhatsApp">
+                        <SiWhatsapp size={24} />
                       </Button>
                     </Link>
                   </div>

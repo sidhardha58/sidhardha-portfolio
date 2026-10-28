@@ -133,7 +133,7 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
     const size = Math.min(0.64, 4.8 / Math.max(bounds.width, 1));
     add({ id: newId("nd"), name: `Heading ${title}`, type: "mesh", materialId: textMaterial,
       geometry: { kind: "text3d", params: { text: title, size, depth: 0.1, bevel: 0.005 } },
-      transform: { ...transform([-bounds.left * size, 0, -0.65]), rotation: [-Math.PI / 2, 0, 0] },
+      transform: { ...transform([-bounds.left * size, 0, -1.05]), rotation: [-Math.PI / 2, 0, 0] },
       visible: true, castShadow: true, receiveShadow: true, children: [] }, id);
     const descriptionId = newId("as");
     doc.assets[descriptionId] = { id: descriptionId, kind: "texture", name: descriptionArtwork(description),
@@ -142,7 +142,7 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
       transparent: true, maps: { map: descriptionId, normalMap: null, roughnessMap: null } });
     add({ id: newId("nd"), name: `Description ${title}`, type: "mesh", materialId: descriptionMaterial,
       geometry: { kind: "plane", params: { width: 4.8, height: 1.4 } },
-      transform: { ...transform([2.4, 0, 0.15]), rotation: [-Math.PI / 2, 0, 0] },
+      transform: { ...transform([2.4, 0, 0.55]), rotation: [-Math.PI / 2, 0, 0] },
       visible: true, castShadow: false, receiveShadow: false, children: [] }, id);
     return id;
   };

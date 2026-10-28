@@ -431,7 +431,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
                 <p className="text-xs text-muted-foreground">Used in</p>
                 <h2 className="truncate text-lg font-semibold">{shown.label}</h2>
               </div>
-              <button type="button" aria-label="Close" onClick={() => setPanel(null)} className="rounded-md p-1 text-muted-foreground hover:text-foreground">
+              <button type="button" aria-label="Close" onClick={() => setPanel(null)} className="cursor-can-hover rounded-md p-1 text-muted-foreground hover:text-foreground">
                 <X className="size-4" />
               </button>
             </div>

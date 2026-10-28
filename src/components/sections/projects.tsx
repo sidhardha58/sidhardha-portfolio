@@ -10,7 +10,9 @@ import type { Skill } from "@/data/projects";
 import { ScrollArea } from "../ui/scroll-area";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { SiGithub } from "react-icons/si";
 import { motion } from "motion/react";
+import { Button } from "../ui/button";
 
 import projects, { type Project } from "@/data/projects";
 
@@ -48,7 +50,7 @@ const ProjectsSection = () => {
   return (
     <SectionWrapper id="projects" className="max-w-7xl mx-auto md:min-h-[130vh] px-4">
       <SectionHeader id="projects" title="Projects" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-4">
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
@@ -80,11 +82,16 @@ const ProjectCard = ({ project }: { project: Project }) => {
               bg={undefined}
               isHovered={isHovered}
             />
-            <div className="absolute w-full h-24 bottom-0 left-0 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10">
+            <div className={`absolute w-full bottom-0 left-0 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10 ${project.hardware ? "h-28" : "h-24"}`}>
               <div className="flex flex-col h-full items-start justify-end p-4">
                 <div className="text-lg text-left [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
                   {project.title}
                 </div>
+                {project.hardware && (
+                  <div className="text-xs text-foreground/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.6)]">
+                    {project.hardware}
+                  </div>
+                )}
                 <div className="text-xs bg-primary text-primary-foreground rounded-lg w-fit px-2">
                   {project.category}
                 </div>
@@ -108,22 +115,21 @@ const ProjectCard = ({ project }: { project: Project }) => {
                   {project.category}
                 </span>
               </div>
-              <div className="shrink-0 flex items-center gap-4">
+              <div className="shrink-0 flex items-center gap-2">
                 {project.github && project.github !== "#" && (
-                  <Link
-                    href={project.github}
-                    target="_blank"
-                    className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-                  >
-                    Source
+                  <Link href={project.github} target="_blank" rel="noopener">
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <SiGithub className="size-4" />
+                      Source
+                    </Button>
                   </Link>
                 )}
                 {project.live && project.live !== "#" && (
-                  <Link href={project.live} target="_blank">
-                    <button className="group flex items-center gap-2 bg-primary text-primary-foreground text-sm font-medium px-4 py-1.5 rounded-full hover:bg-primary/80 transition-colors">
+                  <Link href={project.live} target="_blank" rel="noopener">
+                    <Button size="sm" className="gap-2">
+                      <ArrowUpRight className="size-4" />
                       Visit
-                      <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </button>
+                    </Button>
                   </Link>
                 )}
               </div>
@@ -133,6 +139,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
           {/* Scrollable content */}
           <ScrollArea className="flex-1" type="always" data-lenis-prevent>
             <div className="px-4 py-6 sm:px-8 sm:py-8">
+              {project.hardware && (
+                <div className="mb-8">
+                  <h3 className="mb-2 text-xl font-semibold tracking-tight">Hardware</h3>
+                  <p className="font-mono text-sm text-foreground">{project.hardware}</p>
+                </div>
+              )}
               {/* Tech stack */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -170,12 +182,17 @@ const ProjectCard = ({ project }: { project: Project }) => {
                 {project.content}
               </motion.div>
 
-              <img
-                src={project.src}
-                alt={`${project.title} preview`}
-                loading="lazy"
-                className="mt-10 max-h-[480px] w-full rounded-lg border border-border object-cover object-top"
-              />
+              <div className={`mt-10 grid gap-3 ${project.screenshots.length > 0 ? "sm:grid-cols-2" : ""}`}>
+                {[project.src, ...project.screenshots].map((src) => (
+                  <img
+                    key={src}
+                    src={src}
+                    alt={`${project.title} preview`}
+                    loading="lazy"
+                    className="max-h-[480px] w-full rounded-lg border border-border object-cover object-top"
+                  />
+                ))}
+              </div>
             </div>
           </ScrollArea>
 

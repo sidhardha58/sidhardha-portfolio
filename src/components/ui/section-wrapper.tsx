@@ -18,7 +18,6 @@ const SectionWrapper = ({ id, className, children, ...props }: SectionWrapperPro
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8]);
 
   return (
     <section
@@ -28,7 +27,7 @@ const SectionWrapper = ({ id, className, children, ...props }: SectionWrapperPro
       {...props}
     >
       <motion.div
-        style={{ opacity: reducedMotion ? 1 : opacity, scale: reducedMotion ? 1 : scale }}
+        style={{ opacity: reducedMotion ? 1 : opacity }}
         className="w-full h-full"
       >
         {children}

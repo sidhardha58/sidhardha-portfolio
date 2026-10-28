@@ -3,7 +3,7 @@
 import { useInView } from "motion/react";
 import React, { useRef } from "react";
 import { Button } from "../ui/button";
-import { SiGithub, SiLinkedin } from "react-icons/si";
+import { SiGithub, SiLinkedin, SiWhatsapp } from "react-icons/si";
 import { config } from "@/data/config";
 import Link from "next/link";
 
@@ -18,6 +18,11 @@ const BUTTONS = [
     href: config.social.linkedin,
     icon: <SiLinkedin size={"24"} color={"#fff"} />,
   },
+  {
+    name: "WhatsApp",
+    href: config.social.whatsapp,
+    icon: <SiWhatsapp size={"24"} color={"#fff"} />,
+  },
 ];
 
 const SocialMediaButtons = () => {
@@ -28,7 +33,7 @@ const SocialMediaButtons = () => {
       {show &&
         BUTTONS.map((button) => (
           <Link href={button.href} key={button.name} target="_blank">
-            <Button variant={"ghost"}>{button.icon}</Button>
+            <Button variant={"ghost"} aria-label={button.name}>{button.icon}</Button>
           </Link>
         ))}
     </div>

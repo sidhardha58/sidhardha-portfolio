@@ -209,7 +209,7 @@ export function createKeyboardMotion(
       : 0;
     const up = mobile && section === "hero" ? -1.8
       : section === "contact" ? -0.8
-      : section === "skills" && short ? 0.7
+      : section === "skills" ? (short ? -0.15 : -0.35)
       : section === "experience" ? (mobile ? 2.1 : 2.35)
       : section === "certifications" ? (mobile ? -1.5 : -1.15)
       : 0;

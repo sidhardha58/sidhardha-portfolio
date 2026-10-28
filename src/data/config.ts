@@ -23,7 +23,7 @@ const config = {
   site: "https://sidhardha-portfolio.vercel.app",
 
   githubUsername: "sidhardha58",
-  githubRepo: "Real-time-Water-body-monitoring",
+  githubRepo: "sidhardha-portfolio",
 
   get ogImg() {
     return this.site + "/assets/seo/og-image.jpg";
@@ -31,6 +31,7 @@ const config = {
   social: {
     linkedin: "https://www.linkedin.com/in/sidhardha-valavala-1a2463276",
     github: "https://github.com/sidhardha58",
+    whatsapp: "https://wa.me/917093317438",
   },
 };
 export { config };

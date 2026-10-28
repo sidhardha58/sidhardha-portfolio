@@ -29,16 +29,16 @@ const SkillsSection = () => {
       id="skills"
       className={showGrid
         ? "flex w-full min-h-[100dvh] flex-col justify-center py-16"
-        : "w-full h-screen md:h-[120dvh] pointer-events-none"}
+        : "w-full h-screen pt-28 pointer-events-none"}
     >
       <SectionHeader
         id="skills"
         title="Tech Stack"
         desc={showGrid ? "Tools I build with" : "Click a key, or press a letter on your keyboard"}
         compact={!showGrid}
-        className={showGrid ? "static mb-8" : undefined}
+        className={showGrid ? "mb-8" : undefined}
       />
-      <ul className={showGrid ? "mx-auto grid w-full max-w-5xl grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" : "sr-only"}>
+      <ul className={showGrid ? "relative z-10 mx-auto grid w-full max-w-5xl grid-cols-2 gap-2 px-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" : "sr-only"}>
         {Object.values(SKILLS).map((skill) => (
           <li
             key={skill.name}

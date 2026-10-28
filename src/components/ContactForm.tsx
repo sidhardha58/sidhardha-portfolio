@@ -52,11 +52,10 @@ const ContactForm = () => {
         body: JSON.stringify({ fullName, email, message }),
       });
       if (res.status === 503) {
-        const subject = encodeURIComponent(`Note from ${fullName}`);
-        const body = encodeURIComponent(`${message}\n\n${fullName}\n${email}`);
-        window.location.href = `mailto:${config.email}?subject=${subject}&body=${body}`;
+        const text = encodeURIComponent(`Note from ${fullName} (${email})\n\n${message}`);
+        window.open(`${config.social.whatsapp}?text=${text}`, "_blank", "noopener");
         toast({
-          title: "Opening your mail app",
+          title: "Opening WhatsApp",
           description: "The note is ready to send from there.",
           variant: "default",
           className: cn("top-0 mx-auto flex fixed md:top-4 md:right-4"),

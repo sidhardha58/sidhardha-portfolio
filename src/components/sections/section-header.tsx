@@ -6,10 +6,10 @@ import { ReactNode } from "react"
 export const SectionHeader = ({ id, title, desc, className, compact }: { id: string, title: string | ReactNode, desc?: string, className?: string, compact?: boolean }) => {
   return (
 
-    <div className={cn(compact ? "sticky top-28 z-20 mb-0" : "sticky top-[70px] mb-96", className)}>
+    <div className={cn(compact ? "relative z-10 mb-4" : "sticky top-[70px] z-0 mb-12 md:mb-16", className)}>
       <Link href={`#${id}`}>
         {compact ? (
-          <h2 className="text-center text-3xl font-bold text-foreground md:text-4xl">{title}</h2>
+          <h2 className="text-center text-4xl font-bold text-foreground md:text-7xl">{title}</h2>
         ) : (
           <BoxReveal width="100%">
             <h2 className="text-center text-4xl font-bold text-foreground md:text-7xl">{title}</h2>

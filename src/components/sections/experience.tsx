@@ -24,7 +24,7 @@ const ExperienceSection = () => {
             className="mb-12 md:mb-20 mt-0"
           />
 
-          <div className="flex flex-col gap-8 md:gap-12 relative">
+          <div className="relative z-10 flex flex-col gap-8 md:gap-12">
             <div className="absolute left-8 md:left-1/2 top-4 bottom-4 w-px bg-border hidden md:block -translate-x-1/2" />
 
             {EXPERIENCE.map((exp, index) => (
@@ -37,16 +37,16 @@ const ExperienceSection = () => {
       </SectionWrapper>
 
       <SectionWrapper id="certifications" className="flex flex-col items-center py-20">
-        <div className="w-full max-w-4xl px-4 md:px-8 mx-auto">
+        <div className="mx-auto w-full max-w-7xl px-4">
           <SectionHeader
             id="certifications"
             title="Certifications"
             desc="Courses and internships."
             className="mb-12 md:mb-16 mt-0"
           />
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="relative z-10 grid grid-cols-1 gap-3 md:grid-cols-3">
             {CERTIFICATIONS.map((item, index) => (
-              <li key={`cert-${index}`} className="flex gap-3 rounded-lg border border-border bg-card px-4 py-4">
+              <li key={`cert-${index}`} className="pointer-events-auto flex gap-3 rounded-lg border border-border bg-card px-4 py-4 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/40">
                 <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-md border border-border bg-secondary">
                   {item.mark ? (
                     <img src={item.mark} alt="" className="size-5 object-contain invert dark:invert-0" />
@@ -221,7 +221,7 @@ const ExperienceCard = ({
             type="button"
             aria-label="Close"
             onClick={() => setPhoto(null)}
-            className="absolute right-5 top-5 grid size-10 place-items-center rounded-full bg-white text-black"
+            className="cursor-can-hover absolute right-5 top-5 grid size-10 place-items-center rounded-full bg-white text-black"
           >
             <X className="size-5" />
           </button>
