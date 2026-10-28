@@ -25,9 +25,6 @@ const config = {
   githubUsername: "sidhardha58",
   githubRepo: "sidhardha-portfolio",
 
-  get ogImg() {
-    return this.site + "/assets/seo/og-image.jpg";
-  },
   social: {
     linkedin: "https://www.linkedin.com/in/sidhardha-valavala-1a2463276",
     github: "https://github.com/sidhardha58",

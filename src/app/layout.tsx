@@ -27,29 +27,20 @@ export const metadata: Metadata = {
   // pins every relative/OG url to the .dev origin so nothing canonicalises back to .site
   metadataBase: new URL(config.site),
   alternates: { canonical: "./" },
-  title: "Sidhardha Portfolio",
+  title: "Sidhardha's portfolio",
   description: config.description.long,
   keywords: config.keywords,
   authors: [{ name: config.author }],
   openGraph: {
-    title: config.title,
+    title: "Sidhardha's portfolio",
     description: config.description.short,
     url: config.site,
-    images: [
-      {
-        url: config.ogImg,
-        width: 800,
-        height: 600,
-        alt: "Portfolio preview",
-      },
-    ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: config.title,
+    title: "Sidhardha's portfolio",
     description: config.description.short,
-    images: [config.ogImg],
   },
   robots: {
     index: true,
