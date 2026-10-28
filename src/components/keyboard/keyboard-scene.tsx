@@ -94,8 +94,8 @@ const SceneCanvas = memo(ChibiScene);
 const SCENE_STYLE: CSSProperties = {
   position: "fixed",
   inset: 0,
-  width: "100vw",
-  height: "100dvh",
+  width: "125vw",
+  height: "125dvh",
 };
 
 export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {

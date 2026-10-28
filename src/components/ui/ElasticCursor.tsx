@@ -45,6 +45,11 @@ function getAngle(diffX: number, diffY: number) {
   return (Math.atan2(diffY, diffX) * 180) / Math.PI;
 }
 
+// The page is drawn at 0.8. Pointer and element boxes are viewport pixels;
+// the cursor lives in that scaled space, so positions are stored unscaled.
+const PAGE_ZOOM = 0.8;
+const unzoom = (n: number) => n / PAGE_ZOOM;
+
 const clamp = (v: number, min: number, max: number) =>
   Math.max(min, Math.min(max, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -84,12 +89,12 @@ type Setters = Record<string, Function>;
 function measure(el: HTMLElement): Base {
   const r = el.getBoundingClientRect();
   return {
-    left: r.left,
-    top: r.top,
-    width: r.width,
-    height: r.height,
-    cx: r.left + r.width / 2,
-    cy: r.top + r.height / 2,
+    left: unzoom(r.left),
+    top: unzoom(r.top),
+    width: unzoom(r.width),
+    height: unzoom(r.height),
+    cx: unzoom(r.left + r.width / 2),
+    cy: unzoom(r.top + r.height / 2),
   };
 }
 
@@ -249,20 +254,20 @@ function ElasticCursor() {
   useEffect(() => {
     if (isMobile || isBlogPost) return;
     const onMove = (e: MouseEvent) => {
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
+      pointer.x = unzoom(e.clientX);
+      pointer.y = unzoom(e.clientY);
       if (!cursorMovedRef.current) {
         cursorMovedRef.current = true;
         setCursorMoved(true);
       }
       gsap.to(pos, {
-        x: e.clientX,
-        y: e.clientY,
+        x: unzoom(e.clientX),
+        y: unzoom(e.clientY),
         duration: 1.5,
         ease: "elastic.out(1, 0.5)",
         onUpdate: () => {
-          vel.x = (e.clientX - pos.x) * 1.2;
-          vel.y = (e.clientY - pos.y) * 1.2;
+          vel.x = (unzoom(e.clientX) - pos.x) * 1.2;
+          vel.y = (unzoom(e.clientY) - pos.y) * 1.2;
         },
       });
 
@@ -333,12 +338,12 @@ function ElasticCursor() {
     const onScroll = () => {
       if (!active.el || !active.base) return;
       const r = active.el.getBoundingClientRect();
-      active.base.left = r.left - active.offX;
-      active.base.top = r.top - active.offY;
-      active.base.width = r.width;
-      active.base.height = r.height;
-      active.base.cx = active.base.left + r.width / 2;
-      active.base.cy = active.base.top + r.height / 2;
+      active.base.left = unzoom(r.left) - active.offX;
+      active.base.top = unzoom(r.top) - active.offY;
+      active.base.width = unzoom(r.width);
+      active.base.height = unzoom(r.height);
+      active.base.cx = active.base.left + active.base.width / 2;
+      active.base.cy = active.base.top + active.base.height / 2;
     };
 
     document.addEventListener("pointerover", onOver);

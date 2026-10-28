@@ -29,7 +29,7 @@ const SkillsSection = () => {
       id="skills"
       className={showGrid
         ? "flex w-full min-h-[100dvh] flex-col justify-center py-16"
-        : "w-full h-screen pt-28 pointer-events-none"}
+        : "w-full h-[150vh] pt-28 pointer-events-none"}
     >
       <SectionHeader
         id="skills"
