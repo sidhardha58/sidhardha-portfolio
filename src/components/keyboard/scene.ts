@@ -14,6 +14,7 @@ export type KeyboardSkill = {
   keyboardColor?: string;
   icon: string;
   shortcut?: string;
+  level?: number;
 };
 
 export type KeyboardKey = {
@@ -123,10 +124,10 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
       visible: true, castShadow: true, receiveShadow: true, children: [], transform: transform(position, scale),
     }, layout);
   }
-  const labelsId = group("Skill labels", layout, [-outerX + KIT.pitch / 2, 1.15, -outerZ - 0.7]);
+  const labelsId = group("Skill labels", layout, [-outerX + KIT.pitch / 2, 1.15, -outerZ - 0.42]);
   doc.nodes[labelsId].visible = false;
   const textMaterial = material("Skill text", { color: "#ffffff", roughness: 0.8 });
-  const label = (title: string, description: string) => {
+  const label = (title: string, description: string | number) => {
     const id = group(`Label ${title}`, labelsId);
     doc.nodes[id].visible = false;
     const bounds = headingBounds(title);
@@ -135,15 +136,43 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
       geometry: { kind: "text3d", params: { text: title, size, depth: 0.1, bevel: 0.005 } },
       transform: { ...transform([-bounds.left * size, 0, -1.05]), rotation: [-Math.PI / 2, 0, 0] },
       visible: true, castShadow: true, receiveShadow: true, children: [] }, id);
-    const descriptionId = newId("as");
-    doc.assets[descriptionId] = { id: descriptionId, kind: "texture", name: descriptionArtwork(description),
-      hash: `description-${id}`, size: 0 };
-    const descriptionMaterial = material(`Description ${title}`, { color: "#ffffff", roughness: 1,
-      transparent: true, maps: { map: descriptionId, normalMap: null, roughnessMap: null } });
-    add({ id: newId("nd"), name: `Description ${title}`, type: "mesh", materialId: descriptionMaterial,
-      geometry: { kind: "plane", params: { width: 4.8, height: 1.4 } },
-      transform: { ...transform([2.4, 0, 0.55]), rotation: [-Math.PI / 2, 0, 0] },
-      visible: true, castShadow: false, receiveShadow: false, children: [] }, id);
+    if (typeof description === "number") {
+      const art = flatCaption(confidenceLine(description));
+      const captionId = newId("as");
+      doc.assets[captionId] = { id: captionId, kind: "texture", name: art.url, hash: `score-${id}`, size: 0 };
+      const captionMaterial = material(`Description ${title}`, {
+        color: "#ffffff", emissive: "#ffffff", emissiveIntensity: 0.4, roughness: 1, transparent: true,
+        maps: { map: captionId, normalMap: null, roughnessMap: null },
+      });
+      const planeW = 4.2;
+      const planeH = planeW * (art.height / art.width);
+      const topZ = -0.92;
+      add({ id: newId("nd"), name: `Score ${title}`, type: "mesh", materialId: captionMaterial,
+        geometry: { kind: "plane", params: { width: planeW, height: planeH } },
+        transform: { ...transform([planeW / 2, 0.02, topZ + planeH / 2]), rotation: [-Math.PI / 2, 0, 0] },
+        visible: true, castShadow: false, receiveShadow: false, children: [] }, id);
+      const lit = material(`Bars ${title}`, { color: "#f4f4f4", roughness: 0.45, emissive: "#ffffff", emissiveIntensity: 0.35 });
+      const dim = material(`Bars dim ${title}`, { color: "#8d9298", roughness: 0.8 });
+      const lengths = [0.1, 0.13, 0.16, 0.19, 0.22, 0.25, 0.28, 0.31, 0.34, 0.37];
+      const base = 0.18;
+      lengths.forEach((len, index) => {
+        add({ id: newId("nd"), name: `Bar ${title} ${index + 1}`, type: "mesh",
+          materialId: index < description ? lit : dim,
+          geometry: { kind: "box", params: { width: 0.07, height: 0.04, depth: len } },
+          transform: transform([index * 0.18, 0.03, base - len / 2]),
+          visible: true, castShadow: false, receiveShadow: false, children: [] }, id);
+      });
+    } else {
+      const descriptionId = newId("as");
+      doc.assets[descriptionId] = { id: descriptionId, kind: "texture", name: descriptionArtwork(description),
+        hash: `description-${id}`, size: 0 };
+      const descriptionMaterial = material(`Description ${title}`, { color: "#ffffff", roughness: 1,
+        transparent: true, maps: { map: descriptionId, normalMap: null, roughnessMap: null } });
+      add({ id: newId("nd"), name: `Description ${title}`, type: "mesh", materialId: descriptionMaterial,
+        geometry: { kind: "plane", params: { width: 4.8, height: 1.4 } },
+        transform: { ...transform([2.4, 0, -0.2]), rotation: [-Math.PI / 2, 0, 0] },
+        visible: true, castShadow: false, receiveShadow: false, children: [] }, id);
+    }
     return id;
   };
   const defaultLabelId = label("Explore my skills", "Click, tap, or press a letter key");
@@ -172,13 +201,13 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
       add({ id: newId("nd"), name: `Logo ${skill.name}`, type: "mesh", materialId: logoMaterial,
         geometry: { kind: "plane", params: { width: 0.8, height: 0.8 } },
         transform: { ...transform([0, KIT.logoY, 0]), rotation: [-Math.PI / 2, 0, 0] },
-        visible: true, castShadow: false, receiveShadow: true, children: [] }, nodeId);
+        visible: true, castShadow: false, receiveShadow: false, children: [] }, nodeId);
     }
     const pressedStateId = newId("st");
     doc.states[pressedStateId] = { id: pressedStateId, nodeId, name: "Pressed", overrides: {
       [nodeId]: { "transform.position": [0, -KIT.keyHeight * 0.6, 0] },
     } };
-    return { skill, nodeId, motionId, materialId, pressedStateId, rest, labelId: label(skill.label, skill.shortDescription) };
+    return { skill, nodeId, motionId, materialId, pressedStateId, rest, labelId: label(skill.label, skill.level ?? skill.shortDescription) };
   });
 
   // Unlit image planes preserve the original artwork under any scene lighting.
@@ -198,8 +227,42 @@ export function createKeyboardScene(skills: readonly KeyboardSkill[], columns = 
     pointerTargets: keys.map((k) => k.nodeId) };
 }
 
+const CONFIDENCE: Record<number, string> = {
+  10: "This is the one I reach for every day",
+  9: "I reach for this on almost every project",
+  8: "Pretty confident, and I use it often",
+  7: "Comfortable with this, and I use it on real work",
+  6: "I can ship with this, and I am still learning",
+  5: "I have shipped with this, and I am still learning",
+  4: "I have used this on a project, and I am still learning it",
+  3: "I have used this a little, and I am still learning it",
+};
+
+export function confidenceLine(level: number): string {
+  return CONFIDENCE[level] ?? CONFIDENCE[5];
+}
+
+export function scoreTexture(level: number): string {
+  return flatCaption(confidenceLine(level)).url;
+}
+
 export const resolveKeyboardAsset = async (asset: ChibiDocument["assets"][string]): Promise<string> =>
   asset.name === "keycaps.glb" ? KEYBOARD_MODEL_URL : asset.name;
+
+function flatCaption(text: string): { url: string; width: number; height: number } {
+  const lines: string[] = [];
+  for (const word of text.split(/\s+/)) {
+    if (!lines.length || lines[lines.length - 1].length + word.length > 36) lines.push(word);
+    else lines[lines.length - 1] += ` ${word}`;
+  }
+  const font = 64;
+  const lineHeight = 78;
+  const width = 1100;
+  const height = lines.length * lineHeight + 12;
+  const escape = (line: string) => line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><g fill="white" font-family="Arial, sans-serif" font-weight="600" font-size="${font}">${lines.map((line, index) => `<text x="0" y="${font + index * lineHeight}">${escape(line)}</text>`).join("")}</g></svg>`;
+  return { url: `data:image/svg+xml,${encodeURIComponent(svg)}`, width, height };
+}
 
 /** Rasterized by the texture loader, then rendered on a scene mesh. */
 function descriptionArtwork(text: string): string {

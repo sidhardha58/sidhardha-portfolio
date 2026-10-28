@@ -22,6 +22,7 @@ export enum SkillNames {
   CPP = "cpp",
   ARDUINO = "arduino",
   RASPBERRYPI = "raspberrypi",
+  PYTHON = "python",
 }
 
 export type Skill = {
@@ -77,6 +78,7 @@ export const SKILLS: Record<SkillNames, Skill> = {
   [SkillNames.CPP]: key(20, "cpp", "C++", "C++ solutions in my LeetCode repo, and the Codio certificate.", "#00599c", "cplusplus.svg", "#00599c"),
   [SkillNames.ARDUINO]: key(21, "arduino", "Arduino", "Sensor boards behind BluePulse.", "#00979d", "arduino.svg", "#00878f"),
   [SkillNames.RASPBERRYPI]: key(22, "raspberrypi", "Raspberry Pi", "Edge compute for the kiosk and spy cam.", "#c51a4a", "raspberrypi.svg", "#a22846"),
+  [SkillNames.PYTHON]: key(23, "python", "Python", "Scripts on the Pi for the spy cam and the billing kiosk.", "#3776ab", "python.svg", "#3776ab"),
 };
 
 export type Experience = {

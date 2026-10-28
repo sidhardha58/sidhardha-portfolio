@@ -9,7 +9,7 @@ import { EXPERIENCE, SKILLS, type SkillNames } from "@/data/constants";
 import projects from "@/data/projects";
 import { setSceneStatus } from "@/lib/scene-health";
 import { usePreloader } from "../preloader";
-import { createKeyboardScene, resolveKeyboardAsset, type KeyboardKey, type KeyboardSkill } from "./scene";
+import { confidenceLine, createKeyboardScene, resolveKeyboardAsset, scoreTexture, type KeyboardKey, type KeyboardSkill } from "./scene";
 import { createKeyInput, isTypingTarget } from "./input";
 import { createKeyboardMotion, type KeyboardSection } from "./motion";
 import { useKeyboardSounds } from "./use-keyboard-sounds";
@@ -17,6 +17,26 @@ import { useAdaptiveGraphics } from "./use-adaptive-graphics";
 import { useKeyboardCounts } from "./use-keyboard-counts";
 import { keyWear } from "./wear";
 import { createCounterMotion } from "./counter-motion";
+
+// Out of 10. Daily tools sit at the top, one-project tools sit lower.
+const NOTE: Record<string, string> = {
+  html: "This is the quiet part of the job. Headings, buttons, forms, and the order a page is read. I do not treat it as a separate trick. If the HTML is wrong, the React on top of it is wrong too.",
+  css: "I learned layout by writing CSS before Tailwind existed in my work. I still drop into it when a grid, a sticky title, or a small motion has to be exact, and a utility class would only get in the way.",
+  js: "This is the language under the rest of the stack. React components, Node routes, and the small scripts that move data around are all JavaScript. I am comfortable writing it without a framework when that is the smaller tool.",
+  git: "Every project here lives in Git. Branches, pull requests, and committing as I go came with the work, not as a course I finished and set aside. It is just how the code moves.",
+  cpp: "C++ is not what I ship on a product. I learned it properly enough to solve problems, through the Codio course and a pile of LeetCode, so I can read it and write a solution. It is not the stack I reach for when someone needs a feature next week.",
+};
+
+const LEVEL: Record<string, number> = {
+  js: 10, react: 10,
+  html: 9, nextjs: 9, nodejs: 9, ts: 9, css: 9, mongodb: 9,
+  express: 8, tailwind: 8, git: 8,
+  arduino: 7, raspberrypi: 7, cpp: 7,
+  openai: 6,
+  vercel: 5, threejs: 5, figma: 5, firebase: 5, nestjs: 5,
+  chartjs: 4,
+  python: 3,
+};
 
 // Where that skill was used, and what came out of using it. One line per place.
 // A job and a project with the same name (ZALA, Govigi) stay as one row.
@@ -67,6 +87,8 @@ const USED: Record<string, string> = {
   "raspberrypi|ASTEC": "Used on club builds. Learned to take a wiring idea through to something that runs at an event.",
   "raspberrypi|Autonomous Billing System": "Used to price the basket from the camera and the scale. Learned to join vision with a local database.",
   "raspberrypi|Spy Cam Security": "Used with the camera and a motion sensor. Learned to capture a frame only when the sensor trips.",
+  "python|Autonomous Billing System": "Used for the camera, the scale, and the bill on the Pi. Learned to price a basket without a separate website.",
+  "python|Spy Cam Security": "Used for the script that watches the sensor. Learned to send one frame by email and stay quiet the rest of the time.",
 };
 
 function skillPlaces(name: string) {
@@ -94,8 +116,8 @@ const SceneCanvas = memo(ChibiScene);
 const SCENE_STYLE: CSSProperties = {
   position: "fixed",
   inset: 0,
-  width: "125vw",
-  height: "125dvh",
+  width: "100vw",
+  height: "100dvh",
 };
 
 export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
@@ -110,7 +132,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   const [selected, setSelected] = useState<KeyboardSkill | null>(null);
   const playSound = useKeyboardSounds();
   const scene = useMemo(() => createKeyboardScene(Object.values(SKILLS).map((skill) => ({
-    ...skill, icon: skill.keyboardIcon ?? skill.icon,
+    ...skill, icon: skill.keyboardIcon ?? skill.icon, level: LEVEL[skill.name] ?? 5,
   }))), []);
   const { settings: graphics, markActive } = useAdaptiveGraphics(ready && !isLoading);
   const { shadows, softShadows, ao, bloom, lighting } = graphics;
@@ -121,8 +143,7 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
     vignette: false,
     preset: lighting ? scene.document.environment.preset : null,
   }), [scene, shadows, softShadows, ao, bloom, lighting]);
-  const dpr = useMemo<[number, number]>(() =>
-    [0.5, Math.min(graphics.dpr, maxDpr)], [maxDpr, graphics.dpr]);
+  const dpr = useMemo<[number, number]>(() => [1, maxDpr], [maxDpr]);
   const visibleLabel = useRef<string | null>(null);
   const input = useMemo(() => createKeyInput(scene.keys), [scene]);
   const { counts, total, available, recordPress } = useKeyboardCounts();
@@ -311,6 +332,14 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
   }, [section]);
   const onLoad = useCallback(() => {
     if (failed.current) return;
+    // The first load samples each logo without anisotropy, so the angled
+    // key art goes soft. Reloading it through the runtime redraws the SVG
+    // and turns anisotropy on.
+    for (const skill of Object.values(SKILLS)) {
+      const icon = skill.keyboardIcon ?? skill.icon;
+      if (icon) api.current?.setMaterial(`Logo ${skill.name}`, { map: icon, mapFit: "contain" });
+      api.current?.setMaterial(`Description ${skill.label}`, { map: scoreTexture(LEVEL[skill.name] ?? 5) });
+    }
     setLoadVersion((version) => version + 1);
     setSceneStatus("ready");
     bypassLoading();
@@ -397,11 +426,11 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
       />
       {section === "skills" && inSkills && ready && (
         <div className="pointer-events-none fixed inset-x-4 bottom-8 z-20 text-center text-foreground">
-          <p className="sr-only">{available ? `${total.toLocaleString("en-US")} keyboard presses by all visitors` : "Shared keyboard count unavailable"}</p>
+            <p className="sr-only">{available ? `${total.toLocaleString("en-US")} keyboard presses by all visitors` : "Shared keyboard count unavailable"}</p>
           <div aria-live="polite" className="sr-only">
             <p className="text-xl font-semibold">{selected?.label ?? "Explore my skills"}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {selected?.shortDescription ?? "Click, tap, or press a letter key"}
+              {selected ? confidenceLine(LEVEL[selected.name] ?? 5) : "Click, tap, or press a letter key"}
             </p>
           </div>
           {!explored && (
@@ -428,16 +457,15 @@ export default function KeyboardScene({ maxDpr }: { maxDpr: number }) {
           <div className={`min-h-0 flex flex-1 flex-col transition duration-150 ${panelPhase === "out" ? "translate-x-3 opacity-0" : "translate-x-0 opacity-100"}`}>
             <div className="flex shrink-0 items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">Used in</p>
+                {places.length > 0 && <p className="text-xs text-muted-foreground">Used in</p>}
                 <h2 className="truncate text-lg font-semibold">{shown.label}</h2>
               </div>
               <button type="button" aria-label="Close" onClick={() => setPanel(null)} className="cursor-can-hover rounded-md p-1 text-muted-foreground hover:text-foreground">
                 <X className="size-4" />
               </button>
             </div>
-            <p className="mt-1 shrink-0 text-sm leading-snug text-muted-foreground">{shown.shortDescription}</p>
             {places.length === 0 ? (
-              <p className="mt-3 text-sm">Not tied to a public project yet.</p>
+              <p className="mt-3 text-sm leading-snug text-muted-foreground">{NOTE[shown.name] ?? shown.shortDescription}</p>
             ) : (
               <ul
                 data-lenis-prevent

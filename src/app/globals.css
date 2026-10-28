@@ -80,13 +80,14 @@ body {
   /* Medium (500) is the site-wide default weight. Un-weighted text (body,
      labels, nav) follows this; elements with an explicit font-bold/semibold
      utility keep their own weight. */
-  /* Matches an 80% browser zoom: the page is drawn smaller, so more of
-     each section fits. Full-height pieces use 125vh/125vw so they still
-     fill the window after the 0.8 scale. */
   html {
     font-weight: 500;
+  }
+
+  /* Certificates, projects, and contact only. Drawn at 80% so the
+     cards and the form don't fill the screen. */
+  .section-fit {
     zoom: 0.8;
-    overflow-x: hidden;
   }
 
   body {

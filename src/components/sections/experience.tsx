@@ -36,14 +36,15 @@ const ExperienceSection = () => {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper id="certifications" className="flex flex-col items-center py-20">
-        <div className="mx-auto w-full max-w-7xl px-4">
-          <SectionHeader
-            id="certifications"
-            title="Certifications"
-            desc="Courses and internships."
-            className="mb-12 md:mb-16 mt-0"
-          />
+      <SectionWrapper id="certifications" className="px-4 pt-16 pb-[50vh]">
+        <SectionHeader
+          id="certifications"
+          title="Certifications"
+          desc="Courses and internships."
+          className="mb-12 md:mb-16 mt-0"
+        />
+        <div className="section-fit">
+        <div className="mx-auto w-full max-w-7xl">
           <ul className="relative z-10 grid grid-cols-1 gap-3 md:grid-cols-3">
             {CERTIFICATIONS.map((item, index) => (
               <li key={`cert-${index}`} className="pointer-events-auto flex gap-3 rounded-lg border border-border bg-card px-4 py-4 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/40">
@@ -67,6 +68,7 @@ const ExperienceSection = () => {
               </li>
             ))}
           </ul>
+        </div>
         </div>
       </SectionWrapper>
     </>

@@ -14,14 +14,16 @@ import SectionWrapper from "../ui/section-wrapper";
 
 const ContactSection = () => {
   return (
-    <SectionWrapper id="contact" className="min-h-screen max-w-7xl mx-auto ">
-      <SectionHeader id='contact' className="mb-14" title={
+    <SectionWrapper id="contact" className="px-4 pt-8 pb-6">
+      <SectionHeader id='contact' className="mb-6 md:mb-6" title={
         <>
           LET&apos;S WORK <br />
-          TOGETHER
+          TO+GET+HER
         </>} />
+      <div className="section-fit">
+      <div className="mx-auto w-full max-w-7xl">
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 mx-4">
-        <Card className="w-full min-w-0 bg-white/70 dark:bg-black/70 backdrop-blur-sm rounded-xl mt-10 md:mt-20">
+        <Card className="w-full min-w-0 bg-white/70 dark:bg-black/70 backdrop-blur-sm rounded-xl">
           <CardHeader>
             <CardTitle className="text-4xl">Contact Form</CardTitle>
             <CardDescription className="space-y-2 text-base">
@@ -41,6 +43,8 @@ const ContactSection = () => {
             <ContactForm />
           </CardContent>
         </Card>
+      </div>
+      </div>
       </div>
     </SectionWrapper>
   );

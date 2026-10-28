@@ -143,7 +143,7 @@ const projects: Project[] = [
     src: "/assets/projects-screenshots/billing-kiosk.jpg",
     screenshots: [],
     live: "#",
-    uses: [SkillNames.RASPBERRYPI],
+    uses: [SkillNames.RASPBERRYPI, SkillNames.PYTHON],
     skills: {
       frontend: [],
       backend: [PROJECT_SKILLS.python],
@@ -268,7 +268,7 @@ const projects: Project[] = [
     screenshots: ["/assets/projects-screenshots/spycam-setup.png", "/assets/projects-screenshots/spycam-circuit.jpg"],
     live: "#",
     github: "https://github.com/sidhardha58/spy-cam-security-system",
-    uses: [SkillNames.RASPBERRYPI],
+    uses: [SkillNames.RASPBERRYPI, SkillNames.PYTHON],
     skills: {
       frontend: [],
       backend: [PROJECT_SKILLS.python],
